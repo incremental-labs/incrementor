@@ -12,8 +12,10 @@ lazy val `server` =
   .settings(
     name := "server",
     libraryDependencies ++= Seq(
+      "com.typesafe.akka" %% "akka-agent" % "2.4.0",
       "io.spray" %% "spray-can" % "1.3.1",
       "io.spray" %% "spray-routing" % "1.3.3",
+      "com.wandoulabs.akka" %% "spray-websocket" % "0.1.4",
       "org.reactivemongo" %% "reactivemongo" % "0.11.7",
       "com.typesafe.play" %% "play-iteratees" % "2.3.10"
     )
