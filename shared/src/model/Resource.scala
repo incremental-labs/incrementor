@@ -1,14 +1,11 @@
 package model
 
 trait Resource {
-  this: Product =>
 
-  def name: String = this.productPrefix
-  def units(count: Long): String
-  override def toString: String = name
+  val name: String
 
-}
-
-case object Power extends Resource {
-  def units(count: Long): String = "A"
+  def units(count: Long): String = count match {
+    case n if n == 1 || n == -1 => name
+    case _ => s"${name}s"
+  }
 }
