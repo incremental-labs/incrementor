@@ -1,0 +1,9 @@
+.DS_Store
+
+# sbt
+target/
+lib_managed/
+src_managed/
+project/boot/
+.history
+.cache
