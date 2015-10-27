@@ -9,13 +9,13 @@ class TestNode extends Node {
 
   def increment(): Unit = {
     total += inc
-    jQuery("#total").text(this.total.toString)
+    jQuery("#total").text(total.toString)
   }
 
   def render(): Unit = {
     jQuery("body").append("<div class='testnode'></div>")
     jQuery(".testnode").append("<p>TestNode</p>")
-    jQuery(".testnode").append("<p id='total'>" + this.total + "</p>")
+    jQuery(".testnode").append("<p id='total'>" + total + "</p>")
     jQuery(".testnode").click(increment _)
   }
 }
