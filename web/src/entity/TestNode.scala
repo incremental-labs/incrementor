@@ -4,6 +4,7 @@ import scala.scalajs.js
 import js.Dynamic.{ global => g }
 import org.scalajs.dom.ext._
 import org.scalajs.dom
+import dom.html
 
 class TestNode extends Node {
   val nodeType: String = "TestNode"
@@ -23,16 +24,23 @@ class TestNode extends Node {
     ctx.fillText(total.toString, x + 60, y + 100)
   }
 
-  def init(ctx: dom.CanvasRenderingContext2D, canvas: dom.html.Canvas): Unit = {
-    val x = canvas.width / 2
-    val y = canvas.height / 2
+  def init(ctx: dom.CanvasRenderingContext2D, canvas: html.Canvas): Unit = {
+    val width = 150
+    val height = 150
+    val x = canvas.width / 2 - width
+    val y = canvas.height / 2 - height
 
-    render(ctx, x - 150, y - 150, 150, 150)
+    render(ctx, x, y, width, height)
 
     canvas.onclick = (e: dom.MouseEvent) => {
-      increment
-      ctx.clearRect(0, 0, canvas.width, canvas.height)
-      render(ctx, x - 150, y - 150, 150, 150)
+      val posX = e.clientX
+      val posY = e.clientY
+
+      if (posX > x && posX < x + width && posY > y && posY < y + height) {
+        increment
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        render(ctx, x, y, width, height)
+      }
     }
   }
 
