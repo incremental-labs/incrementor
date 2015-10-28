@@ -12,7 +12,6 @@ class TestNode extends Node {
 
   def increment = {
     total += inc
-    println("click")
   }
 
   def render(ctx: dom.CanvasRenderingContext2D, x: Int, y: Int, width: Int, height: Int): Unit = {
