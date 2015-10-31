@@ -18,11 +18,78 @@ class Game(
   height: Double | String = 600,
   renderer: Int = Phaser.AUTO,
   parent: String | html.Element = "",
-  state: js.Dynamic) extends js.Object {
+  state: js.Dynamic = null) extends js.Object {
+
+  var state: State = js.native
 
   val add: GameObjectFactory = js.native
   val load: Loader = js.native
+  var stage: Stage = js.native
+  val world: World = js.native
+  val camera: Camera = js.native
+  val input: Input = js.native
 }
+
+@js.native
+@JSName("Phaser.StateManager")
+class StateManager(game: Game, pendingState: State) extends js.Object
+
+@js.native
+@JSName("Phaser.State")
+abstract class State() extends js.Object {
+  protected final def game: Game = js.native
+  protected final def load: Loader = js.native
+
+  def preload: Unit = js.native
+  def create: Unit = js.native
+  def update: Unit = js.native
+}
+
+@js.native
+@JSName("Phaser.Stage")
+class Stage(game: Game) extends js.Object {
+  var backgroundColor: Double | String =  js.native
+}
+
+@js.native
+@JSName("Phaser.World")
+class World(game: Game) extends js.Object {
+  def setBounds(x: Double, y: Double, width: Double, height: Double): Unit = js.native
+}
+
+@js.native
+@JSName("Phaser.Camera")
+class Camera(game: Game, id: Double, x: Double, y: Double, width: Double, height: Double) extends js.Object {
+  var x: Double = js.native
+  var y: Double = js.native
+}
+
+@js.native
+@JSName("Phaser.Input")
+class Input(game: Game) extends js.Object {
+  var activePointer: Pointer = js.native
+  var mousePointer: Pointer = js.native
+}
+
+@js.native
+@JSName("Phaser.Pointer")
+class Pointer(game: Game, id: Double, pointerMode: PointerMode) extends js.Object {
+  val position: Point = js.native
+  var isUp: Boolean = js.native
+  var isDown: Boolean = js.native
+}
+
+@js.native
+@JSName("Phaser.Point")
+class Point(x: Double, y: Double) extends js.Object {
+  var x: Double = js.native
+  var y: Double = js.native
+  def clone(outPut: Point = null): Point = js.native
+}
+
+@js.native
+@JSName("Phaser.PointerMode")
+class PointerMode extends js.Object
 
 @js.native
 @JSName("Phaser.Loader")

@@ -1,44 +1,51 @@
 import scala.scalajs.js
-import scala.scalajs.js.JSApp
 import js.Dynamic.{ global => g }
-import org.scalajs.dom.ext._
 import org.scalajs.dom
-import dom.html
 import scalajs.js.annotation.JSExport
 import phaser._
 
 @JSExport
 object Main {
 
+  var game: Game = null
+  var camOrig: Point = null
+
   @JSExport
   def main(): Unit = {
-    g.game = new Game(width = dom.window.innerWidth,
+    game = new Game(width = dom.window.innerWidth,
                       height = dom.window.innerHeight,
                       parent = "",
                       state = js.Dynamic.literal(preload = preload, create = create, update = update))
   }
 
   val preload = () => {
-    g.game.stage.backgroundColor = "#666"
-    g.game.load.image("ideos", "assets/hex.png", false)
+    game.stage.backgroundColor = "#666"
+    game.load.image("hex", "assets/hex.png", false)
+    game.load.image("hex2", "assets/hex.png", false)
   }
 
   val create = () => {
-    g.game.world.setBounds(0, 0, 2000, 2000)
+    game.world.setBounds(0, 0, 10000, 10000)
 
-    g.game.add.sprite(650, 300, "ideos")
+    game.add.sprite(650, 300, "hex")
+    game.add.sprite(0, 0, "hex2")
   }
 
-  val update = () => {    
-    if (g.game.input.activePointer.isDown) {
-      if (g.game.origDragPoint) {
-        g.game.camera.x += g.game.origDragPoint.x - g.game.input.activePointer.position.x
-        g.game.camera.y += g.game.origDragPoint.y - g.game.input.activePointer.position.y
+  val update = () => {
+    dragCam(game.input.mousePointer)
+  }
+
+  def dragCam(mousePointer: Pointer): Unit = {
+    if (mousePointer.isDown) {
+      if (camOrig != null) {
+        game.camera.x += camOrig.x - mousePointer.position.x
+        game.camera.y += camOrig.y - mousePointer.position.y
       }
-      g.game.origDragPoint = g.game.input.activePointer.position.clone()
-    } else {
-      g.game.origDragPoint = null
+
+      camOrig = mousePointer.position.clone()
     }
+
+    if (mousePointer.isUp) camOrig = null
   }
 
 }
