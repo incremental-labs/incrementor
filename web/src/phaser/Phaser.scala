@@ -38,6 +38,4 @@ class GameObjectFactory(game: Game) extends js.Object {
 
 @js.native
 @JSName("Phaser.Sprite")
-class Sprite(game: Game, x: Double = 0, y: Double = 0, key: String, frame: String) extends js.Object {
-
-}
+class Sprite(game: Game, x: Double = 0, y: Double = 0, key: String, frame: String) extends js.Object

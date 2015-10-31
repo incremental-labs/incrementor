@@ -15,7 +15,7 @@ object Main {
     g.game = new Game(width = dom.window.innerWidth,
                       height = dom.window.innerHeight,
                       parent = "",
-                      state = js.Dynamic.literal(preload = preload, create = create))
+                      state = js.Dynamic.literal(preload = preload, create = create, update = update))
   }
 
   val preload = () => {
@@ -23,6 +23,22 @@ object Main {
     g.game.load.image("ideos", "assets/hex.png", false)
   }
 
-  val create = () => g.game.add.sprite(650, 300, "ideos")
+  val create = () => {
+    g.game.world.setBounds(0, 0, 2000, 2000)
+
+    g.game.add.sprite(650, 300, "ideos")
+  }
+
+  val update = () => {    
+    if (g.game.input.activePointer.isDown) {
+      if (g.game.origDragPoint) {
+        g.game.camera.x += g.game.origDragPoint.x - g.game.input.activePointer.position.x
+        g.game.camera.y += g.game.origDragPoint.y - g.game.input.activePointer.position.y
+      }
+      g.game.origDragPoint = g.game.input.activePointer.position.clone()
+    } else {
+      g.game.origDragPoint = null
+    }
+  }
 
 }
