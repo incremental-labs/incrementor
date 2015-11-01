@@ -2,6 +2,7 @@ import scala.scalajs.js
 import js.Dynamic.{ global => g }
 import org.scalajs.dom
 import scalajs.js.annotation.JSExport
+import entity._
 import phaser._
 
 @JSExport
@@ -9,6 +10,7 @@ object Main {
 
   var game: Game = null
   var camOrig: Point = null
+  var testNode: Node = null
 
   @JSExport
   def main(): Unit = {
@@ -29,36 +31,39 @@ object Main {
     game.camera.x = game.world.width / 2;
     game.camera.y = game.world.height / 2;
 
-    val hex = game.add.sprite(0, 0, "hex")
-    hex.x = (game.camera.x + game.camera.width / 2) - hex.width / 2
-    hex.y = (game.camera.y + game.camera.height / 2) - hex.height / 2
+    testNode = new TestNode(game)
+    testNode.init(0, 0, "hex")
+
+    testNode.sprite.x = (game.camera.x + game.camera.width / 2) - testNode.sprite.width / 2
+    testNode.sprite.y = (game.camera.y + game.camera.height / 2) - testNode.sprite.height / 2
 
     val hex2 = game.add.sprite(0, 0, "hex")
-    hex2.x = hex.x - hex.width / 2 - 75
-    hex2.y = hex.y - hex.height / 2 + 20
+    hex2.x = testNode.sprite.x - testNode.sprite.width / 2 - 75
+    hex2.y = testNode.sprite.y - testNode.sprite.height / 2 + 20
 
     val hex3 = game.add.sprite(0, 0, "hex")
     hex3.x = hex2.x
     hex3.y = hex2.y + hex2.height - 40
 
     val hex4 = game.add.sprite(0, 0, "hex")
-    hex4.x = hex.x
+    hex4.x = testNode.sprite.x
     hex4.y = hex3.y + hex3.height / 2 - 20
 
     val hex5 = game.add.sprite(0, 0, "hex")
-    hex5.x = hex.x + hex.width / 2 + 75
+    hex5.x = testNode.sprite.x + testNode.sprite.width / 2 + 75
     hex5.y = hex3.y
 
     val hex6 = game.add.sprite(0, 0, "hex")
-    hex6.x = hex.x + hex.width / 2 + 75
+    hex6.x = testNode.sprite.x + testNode.sprite.width / 2 + 75
     hex6.y = hex2.y
 
     val hex7 = game.add.sprite(0, 0, "hex")
-    hex7.x = hex.x
+    hex7.x = testNode.sprite.x
     hex7.y = hex6.y - hex6.height / 2 + 20
   }
 
   val update = () => {
+    testNode.update
     dragCam(game.input.mousePointer)
   }
 

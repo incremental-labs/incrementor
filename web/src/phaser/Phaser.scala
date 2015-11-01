@@ -105,13 +105,45 @@ class Loader(game: Game) extends js.Object {
 @JSName("Phaser.GameObjectFactory")
 class GameObjectFactory(game: Game) extends js.Object {
   def sprite(x: Double = 0, y: Double = 0, key: String = js.native): Sprite = js.native
+  def text(x: Double, y: Double, text: String, style: js.Dynamic = null): Text = js.native
+}
+
+@js.native
+@JSName("Phaser.Text")
+class Text(game: Game, x: Double, y: Double, text: String, style: js.Dynamic) extends js.Object {
+  var text: String = js.native
 }
 
 @js.native
 @JSName("Phaser.Sprite")
-class Sprite(game: Game, x: Double = 0, y: Double = 0, key: String, frame: String) extends js.Object {
+class Sprite(game: Game, x: Double = 0, y: Double = 0, key: String, frame: String) extends js.Object
+    with ComponentCore with InputEnabled{
   var x: Double = js.native
   var y: Double = js.native
   var width: Double = js.native
   var height: Double = js.native
+  def addChild(text: Text): Text = js.native
+}
+
+@js.native
+trait ComponentCore extends js.Object {
+  val events: Events = js.native
+}
+
+@js.native
+trait InputEnabled extends js.Object {
+  def inputEnabled: Boolean = js.native
+  def inputEnabled_=(value: Boolean): Unit = js.native
+}
+
+@js.native
+@JSName("Phaser.Events")
+class Events(sprite: Sprite) extends js.Object {
+  val onInputDown: Signal[js.Function1[Sprite, _]] = js.native
+}
+
+@js.native
+@JSName("Phaser.Signal")
+class Signal[ListenerType <: js.Function] extends js.Object {
+  def add(listener: ListenerType): Unit = js.native
 }
