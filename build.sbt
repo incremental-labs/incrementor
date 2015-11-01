@@ -20,7 +20,7 @@ lazy val `server` =
       "com.typesafe.play" %% "play-iteratees" % "2.3.10"
     )
   )
-  .dependsOn(`shared`)
+//  .dependsOn(`shared`)
 
 lazy val `shared` =
 (project in file("shared"))
