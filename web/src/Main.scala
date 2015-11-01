@@ -15,9 +15,9 @@ object Main {
   @JSExport
   def main(): Unit = {
     game = new Game(width = dom.window.innerWidth,
-                      height = dom.window.innerHeight,
-                      parent = "",
-                      state = js.Dynamic.literal(preload = preload, create = create, update = update))
+                    height = dom.window.innerHeight,
+                    parent = "",
+                    state = js.Dynamic.literal(preload = preload, create = create, update = update))
   }
 
   val preload = () => {
