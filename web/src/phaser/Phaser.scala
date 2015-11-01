@@ -54,6 +54,8 @@ class Stage(game: Game) extends js.Object {
 @js.native
 @JSName("Phaser.World")
 class World(game: Game) extends js.Object {
+  var width: Double = js.native
+  var height: Double = js.native
   def setBounds(x: Double, y: Double, width: Double, height: Double): Unit = js.native
 }
 
@@ -62,6 +64,8 @@ class World(game: Game) extends js.Object {
 class Camera(game: Game, id: Double, x: Double, y: Double, width: Double, height: Double) extends js.Object {
   var x: Double = js.native
   var y: Double = js.native
+  var width: Double = js.native
+  var height: Double = js.native
 }
 
 @js.native
@@ -105,4 +109,9 @@ class GameObjectFactory(game: Game) extends js.Object {
 
 @js.native
 @JSName("Phaser.Sprite")
-class Sprite(game: Game, x: Double = 0, y: Double = 0, key: String, frame: String) extends js.Object
+class Sprite(game: Game, x: Double = 0, y: Double = 0, key: String, frame: String) extends js.Object {
+  var x: Double = js.native
+  var y: Double = js.native
+  var width: Double = js.native
+  var height: Double = js.native
+}
