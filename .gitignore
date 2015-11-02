@@ -1,3 +1,8 @@
+# app staging
+/web/app/assets/js/classes/
+/web/app/assets/js/web-*.js
+/web/app/assets/js/web-*.js.map
+
 .DS_Store
 
 # sbt

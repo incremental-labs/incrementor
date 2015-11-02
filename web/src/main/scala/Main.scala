@@ -1,17 +1,16 @@
-import scala.scalajs.js
-import org.scalajs.dom
-import dom.html
-import org.scalajs.jquery.jQuery
-import js.annotation._
 import lib._
+import org.scalajs.dom
+import org.scalajs.dom.html
+
+import scala.scalajs.js.JSApp
+import scala.scalajs.js.annotation._
 
 @JSExport
-object Main {
+object Main extends JSApp {
 
   @JSExport
-  def main(canvas: html.Canvas): Unit = {
+  def main(): Unit = {
     val game = new Game(0, 0, 800, 600)
-
     val psu = new PSU(0, 0)
   }
 
