@@ -1,3 +1,5 @@
+package server
+
 import akka.actor.ActorSystem
 import akka.io.IO
 import akka.pattern._

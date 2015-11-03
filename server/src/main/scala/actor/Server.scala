@@ -3,7 +3,7 @@ package actor
 import java.io.File
 
 import akka.actor.{Actor, Props}
-import com.typesafe.config.{ConfigFactory, Config}
+import com.typesafe.config.{Config, ConfigFactory}
 import properties._
 import spray.routing._
 
@@ -18,21 +18,15 @@ case class Server(root: String, conf: Config) extends HttpServiceActor with Base
   lazy val resourceRoute = s"${server.resource.route(conf)}"
 
   override def receive: Actor.Receive = runRoute {
-    index ~
-    resources
-  }
 
-  def index: Route = {
-    log.info(s"serving index from file: $indexFile")
     path("") {
+      log.info(s"serving index from file: $indexFile")
       getFromFile(indexFile)
-    }
-  }
 
-  def resources: Route = {
-    log.info(s"serving resources from directory: $resourceDir on route: $resourceRoute")
-    pathPrefix(resourceRoute) {
+    } ~ pathPrefix(resourceRoute) {
+      log.info(s"serving resources from directory: $resourceDir on route: $resourceRoute")
       getFromDirectory(resourceDir)
+
     }
   }
 

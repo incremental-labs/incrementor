@@ -1,6 +1,6 @@
 package actor
 
-import akka.actor.{ActorRefFactory, Actor, ActorLogging}
+import akka.actor.{Actor, ActorLogging}
 
 trait Base extends Actor with ActorLogging {
   implicit def system = context.system

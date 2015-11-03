@@ -37,7 +37,12 @@ lazy val `server` =
     .dependsOn(`shared-jvm`)
 
 lazy val `shared` =
-  crossProject.crossType(CrossType.Pure) in file("shared")
+  (crossProject.crossType(CrossType.Pure) in file("shared"))
+    .settings(
+      libraryDependencies ++= Seq(
+        "com.lihaoyi" %%% "scalarx" % "0.2.8"
+      )
+    )
 
 lazy val `shared-jvm` =
   `shared`.jvm
