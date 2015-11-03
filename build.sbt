@@ -30,14 +30,14 @@ lazy val `server` =
             options.copy(workingDirectory = Some(appDir))),
 
       libraryDependencies ++= Seq(
-        "io.spray" %% "spray-can" % "1.3.1",
+        "io.spray" %% "spray-can" % "1.3.2",
         "com.wandoulabs.akka" %% "spray-websocket" % "0.1.4"
       )
     )
     .dependsOn(`shared-jvm`)
 
 lazy val `shared` =
-  (crossProject.crossType(CrossType.Pure) in file("shared"))
+  (crossProject in file("shared"))
     .settings(
       libraryDependencies ++= Seq(
         "com.lihaoyi" %%% "scalarx" % "0.2.8"
