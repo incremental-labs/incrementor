@@ -36,6 +36,10 @@ object Server extends App {
 
       system.log.info("awaiting bound confirmation...")
       message
+        .map {
+          case msg: Http.Bound => msg
+          case msg => throw new RuntimeException(s"unexpected message received during http binding: $msg")
+        }
         .onComplete {
           case Success(_: Http.Bound) =>
             system.log.info("server actor bound successfully!")
@@ -43,10 +47,6 @@ object Server extends App {
 
           case Failure(t: Throwable) =>
             system.log.error(t, "server encountered error during execution")
-            shutdown()
-
-          case Success(msg) =>
-            system.log.warning(s"server encountered unexpected message during binding: $msg")
             shutdown()
         }
 
