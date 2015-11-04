@@ -1,3 +1,3 @@
 package ecs
 
-trait Component extends Model
+trait Component

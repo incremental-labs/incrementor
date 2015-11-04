@@ -1,33 +1,56 @@
 package ecs
 
 import rx._
+import ops._
 
-trait Entities {
-  this: Model =>
+trait Entities[C <: Component, T <: Tag, E <: Entity[C, T]] {
+  
+  def entities: Rx[Set[Var[E]]] = _entities
 
-  lazy val entities: Rx[Set[_ <: Entity]] = Rx(declaredEntities() ++ entityStore().map(_()))
-  private lazy val entityStore: Var[Set[Rx[_ <: Entity]]] = Var(Set.empty)
-
-  def addEntity[E <: Entity](rx: Rx[E]): Entities = {
-    addModel(rx)
-    entityStore() += rx
-    this
+  def addEntity(entity: Var[E]): Var[E] = {
+    _entityToAddVar() = Some(entity)
+    entity
   }
 
-  def removeEntity[E <: Entity](rx: Rx[E]): Entities = {
-    removeModel(rx)
-    entityStore() -= rx
-    this
+  def removeEntity(entity: Var[E]): Var[E] = {
+    _entityToRemoveVar() = Some(entity)
+    entity
   }
 
-  protected lazy val declaredEntities: Rx[Set[_ <: Entity]] = Rx(declaredEntityStore().map(_()))
-  private lazy val declaredEntityStore: Var[Set[Var[_ <: Entity]]] = Var(Set.empty)
+  def entityToAdd: Rx[Var[E]] = _entityToAdd
+  def entityToRemove: Rx[Var[E]] = _entityToRemove
 
-  protected def entity[E <: Entity](definition: => E): Var[E] = declareEntity(definition)
-  private def declareEntity[E <: Entity](definition: => E): Var[E] = {
-    val result = model(definition)
-    declaredEntityStore() += result
-    result
-  }
+  def addedEntity: Rx[Var[E]] = _addedEntity
+  def removedEntity: Rx[Var[E]] = _removedEntity
 
+  private val _entities: Var[Set[Var[E]]] = Var(Set.empty, "_entities")
+
+  private val _entityToAddVar: Var[Option[Var[E]]] = Var(None, "_entityToAddVar")
+  protected val _entityToAdd: Rx[Var[E]] = _entityToAddVar.filter(_.isDefined).map(_.get)
+
+  private val _addedEntityVar: Var[Option[Var[E]]] = Var(None, "_addedEntityVar")
+  protected val _addedEntity: Rx[Var[E]] = _addedEntityVar.filter(_.isDefined).map(_.get)
+
+  protected val _addEntity: Obs =
+    _entityToAdd
+      .filter(vc => !_entities().contains(vc))
+      .foreach(vc => {
+        _entities() += vc
+        _addedEntityVar() = Some(vc)
+      })
+
+  private val _entityToRemoveVar: Var[Option[Var[E]]] = Var(None, "_entityToRemoveVar")
+  protected val _entityToRemove: Rx[Var[E]] = _entityToRemoveVar.filter(_.isDefined).map(_.get)
+
+  private val _removedEntityVar: Var[Option[Var[E]]] = Var(None, "_removedEntityVar")
+  protected val _removedEntity: Rx[Var[E]] = _removedEntityVar.filter(_.isDefined).map(_.get)
+
+  protected val _removeEntity: Obs =
+    _entityToRemove
+      .filter(rxc => _entities().contains(rxc))
+      .foreach(rxc => {
+        _entities() -= rxc
+        _removedEntityVar() = Some(rxc)
+      })
+  
 }

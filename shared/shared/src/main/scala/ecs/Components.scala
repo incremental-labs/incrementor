@@ -1,33 +1,56 @@
 package ecs
 
 import rx._
+import ops._
 
-trait Components {
-  this: Model =>
+trait Components[C <: Component] {
 
-  lazy val components: Rx[Set[_ <: Component]] = Rx(declaredComponents() ++ componentStore().map(_()))
-  private lazy val componentStore: Var[Set[Rx[_ <: Component]]] = Var(Set.empty)
+  def components: Rx[Set[Var[C]]] = _components
 
-  def addComponent[C <: Component](rx: Rx[C]): Components = {
-    addModel(rx)
-    componentStore() += rx
-    this
+  def addComponent(component: Var[C]): Var[C] = {
+    _componentToAddVar() = Some(component)
+    component
   }
 
-  def removeComponent[C <: Component](rx: Rx[C]): Components = {
-    removeModel(rx)
-    componentStore() -= rx
-    this
+  def removeComponent(component: Var[C]): Var[C] = {
+    _componentToRemoveVar() = Some(component)
+    component
   }
 
-  protected lazy val declaredComponents: Rx[Set[_ <: Component]] = Rx(declaredComponentStore().map(_()))
-  private lazy val declaredComponentStore: Var[Set[Var[_ <: Component]]] = Var(Set.empty)
+  def componentToAdd: Rx[Var[C]] = _componentToAdd
+  def componentToRemove: Rx[Var[C]] = _componentToRemove
 
-  protected def component[C <: Component](definition: => C): Var[C] = declareComponent(definition)
-  private def declareComponent[C <: Component](definition: => C): Var[C] = {
-    val result = model(definition)
-    declaredComponentStore() += result
-    result
-  }
+  def addedComponent: Rx[Var[C]] = _addedComponent
+  def removedComponent: Rx[Var[C]] = _removedComponent
+
+  private val _components: Var[Set[Var[C]]] = Var(Set.empty, "_components")
+
+  private val _componentToAddVar: Var[Option[Var[C]]] = Var(None, "_componentToAdd")
+  protected val _componentToAdd: Rx[Var[C]] = _componentToAddVar.filter(_.isDefined).map(_.get)
+
+  private val _addedComponentVar: Var[Option[Var[C]]] = Var(None, "_addedComponent")
+  protected val _addedComponent: Rx[Var[C]] = _addedComponentVar.filter(_.isDefined).map(_.get)
+
+  protected val _addComponent: Obs =
+    _componentToAdd
+      .filter(vc => !_components().contains(vc))
+      .foreach(vc => {
+        _components() += vc
+        _addedComponentVar() = Some(vc)
+      })
+
+  private val _componentToRemoveVar: Var[Option[Var[C]]] = Var(None, "_componentToRemove")
+  protected val _componentToRemove: Rx[Var[C]] = _componentToRemoveVar.filter(_.isDefined).map(_.get)
+
+  private val _removedComponentVar: Var[Option[Var[C]]] = Var(None, "_removedComponent")
+  protected val _removedComponent: Rx[Var[C]] = _removedComponentVar.filter(_.isDefined).map(_.get)
+
+  protected val _removeComponent: Obs =
+    _componentToRemove
+      .filter(rxc => _components().contains(rxc))
+      .foreach(rxc => {
+        _components() -= rxc
+        _removedComponentVar() = Some(rxc)
+      })
 
 }

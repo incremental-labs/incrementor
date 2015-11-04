@@ -1,5 +1,11 @@
 package ecs
 
-trait Entity extends Model with Components
+import rx._
+import ops._
+
+trait Entity[C <: Component, T <: Tag]
+  extends Components[C]
+  with Tags[T] {
 
 
+}
