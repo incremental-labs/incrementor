@@ -14,18 +14,18 @@ lazy val incrementor =
     .settings(common: _ *)
     .settings(
       name := "incrementor"
-    ).aggregate(`server`, `shared-jvm`, `shared-js`, `web`)
+    ).aggregate(server, sharedJVM, sharedJS, web)
 
-lazy val `server` =
+lazy val server =
   (project in file("server"))
     .settings(common: _ *)
     .settings(Revolver.settings: _ *)
     .settings(
       name := "server",
 
-      Revolver.reStart <<= Revolver.reStart.dependsOn(fastOptJS in Compile in `web`, packageJSDependencies in Compile in `web`),
+      Revolver.reStart <<= Revolver.reStart.dependsOn(fastOptJS in Compile in web, packageJSDependencies in Compile in web),
       Revolver.reForkOptions <<=
-        (Revolver.reForkOptions, webAppDir in `web`)
+        (Revolver.reForkOptions, webAppDir in web)
           .map((options: ForkOptions, appDir: File) =>
             options.copy(workingDirectory = Some(appDir))),
 
@@ -34,32 +34,28 @@ lazy val `server` =
         "com.wandoulabs.akka" %% "spray-websocket" % "0.1.4"
       )
     )
-    .dependsOn(`shared-jvm`)
+    .dependsOn(sharedJVM)
 
-lazy val `shared` =
+lazy val shared =
   (crossProject in file("shared"))
+    .settings(common: _ *)
     .settings(
       libraryDependencies ++= Seq(
-        "com.lihaoyi" %%% "scalarx" % "0.2.8"
+        "org.spire-math" %%% "cats" % "0.2.0",
+
+        // Intellij shows an error on this dep, but it's wrong
+        compilerPlugin("org.scalamacros" %% "paradise" % "2.1.0-M5" cross CrossVersion.full)
       )
     )
 
-lazy val `shared-jvm` =
-  `shared`.jvm
-    .settings(common: _ *)
-    .settings(name := "shared-jvm")
+lazy val sharedJS = shared.js
+lazy val sharedJVM = shared.jvm
 
-lazy val `shared-js` =
-  `shared`.js
-    .settings(common: _ *)
-    .settings(name := "shared-js")
-
-lazy val `web` =
+lazy val web =
   (project in file("web"))
     .enablePlugins(ScalaJSPlugin)
     .settings(common: _ *)
     .settings(
-      name := "web",
 
       webAppDir := baseDirectory.value / "app",
 
@@ -77,4 +73,4 @@ lazy val `web` =
       )
 
     )
-    .dependsOn(`shared-js`)
+    .dependsOn(sharedJS)
